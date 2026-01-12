@@ -1,0 +1,48 @@
+# Build artifacts
+bin/
+obj/
+
+# Development files
+*.user
+*.userosoblsolete
+*.suo
+*.userprefs
+.vs/
+.vscode/
+.idea/
+*.swp
+*~
+
+# Dependencies
+packages/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Testing
+*.Tests/
+TestResults/
+
+# Other
+*.bak
+*.tmp
+*.temp

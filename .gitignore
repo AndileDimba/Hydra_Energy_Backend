@@ -1,0 +1,40 @@
+## Build results
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rm/
+[Aa]rm64/
+bld/
+
+## Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.swp
+*.swo
+
+## Sensitive configuration files
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
+## Keep example file
+!appsettings.Example.json
+
+## Test files
+*.http
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Logs
+*.log
+backend_tree.txt
+.abacus.donotdelete

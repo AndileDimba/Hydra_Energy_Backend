@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hydra-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+      - HYDRA_AUTH_URL=https://identity.hydra.africa/connect/token
+      - HYDRA_API_URL=https://hydra-api.azurewebsites.net
+      - HYDRA_CLIENT_ID=ro.client
+      - HYDRA_CLIENT_SECRET=secret
+      - HYDRA_USERNAME=ll-wc-04@hydra.africa
+      - HYDRA_PASSWORD=CpBzdnYM7Qb6b4q
+      - HYDRA_GRANT_TYPE=password
+      - HYDRA_SCOPE=api1
+      - WEATHER_API_KEY=${WEATHER_API_KEY:-}
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:80,http://frontend
+    networks:
+      - hydra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ../hydra-dashboard-frontend
+      dockerfile: Dockerfile
+    container_name: hydra-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:5000/api
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - hydra-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+networks:
+  hydra-network:
+    driver: bridge
+    name: hydra-network
+
+volumes:
+  backend-data:
+    name: hydra-backend-data
