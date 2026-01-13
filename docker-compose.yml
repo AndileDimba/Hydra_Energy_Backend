@@ -11,14 +11,14 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5000
-      - HYDRA_AUTH_URL=https://identity.hydra.africa/connect/token
-      - HYDRA_API_URL=https://hydra-api.azurewebsites.net
-      - HYDRA_CLIENT_ID=ro.client
-      - HYDRA_CLIENT_SECRET=secret
-      - HYDRA_USERNAME=ll-wc-04@hydra.africa
-      - HYDRA_PASSWORD=CpBzdnYM7Qb6b4q
-      - HYDRA_GRANT_TYPE=password
-      - HYDRA_SCOPE=api1
+      - HYDRA_AUTH_URL=${HYDRA_AUTH_URL}
+      - HYDRA_API_URL=${HYDRA_API_URL}
+      - HYDRA_CLIENT_ID=${HYDRA_CLIENT_ID}
+      - HYDRA_CLIENT_SECRET=${HYDRA_CLIENT_SECRET}
+      - HYDRA_USERNAME=${HYDRA_USERNAME}
+      - HYDRA_PASSWORD=${HYDRA_PASSWORD}
+      - HYDRA_GRANT_TYPE=${HYDRA_GRANT_TYPE:-password}
+      - HYDRA_SCOPE=${HYDRA_SCOPE:-api1}
       - WEATHER_API_KEY=${WEATHER_API_KEY:-}
       - CORS_ORIGINS=http://localhost:3000,http://localhost:80,http://frontend
     networks:
@@ -33,7 +33,7 @@ services:
 
   frontend:
     build:
-      context: ../hydra-dashboard-frontend
+      context: ../Hydra_Energy_Frontend
       dockerfile: Dockerfile
     container_name: hydra-frontend
     ports:
