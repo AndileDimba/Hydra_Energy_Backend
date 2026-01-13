@@ -4,16 +4,16 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy csproj and restore dependencies
-COPY ["HydraEnergyDashboard.csproj", "./"]
-RUN dotnet restore "HydraEnergyDashboard.csproj"
+COPY ["HydraEnergyAPI.csproj", "./"]
+RUN dotnet restore "HydraEnergyAPI.csproj"
 
 # Copy everything else and build
 COPY . .
-RUN dotnet build "HydraEnergyDashboard.csproj" -c Release -o /app/build
+RUN dotnet build "HydraEnergyAPI.csproj" -c Release -o /app/build
 
 # Stage 2: Publish
 FROM build AS publish
-RUN dotnet publish "HydraEnergyDashboard.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "HydraEnergyAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Stage 3: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
@@ -37,4 +37,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:5000/health || exit 1
 
 # Run the application
-ENTRYPOINT ["dotnet", "HydraEnergyDashboard.dll"]
+ENTRYPOINT ["dotnet", "HydraEnergyAPI.dll"]
