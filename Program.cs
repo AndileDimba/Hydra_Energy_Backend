@@ -41,8 +41,15 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<HydraSettings>(builder.Configuration.GetSection("HydraSettings"));
 builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
 
-// Register HttpClient
+// Register HttpClient with base configuration
 builder.Services.AddHttpClient();
+
+// Configure named HttpClient for HYDRA API
+builder.Services.AddHttpClient("HydraAPI", (serviceProvider, client) =>
+{
+    var hydraSettings = serviceProvider.GetRequiredService<IOptions<HydraSettings>>().Value;
+    // Don't set BaseAddress here - services will use full URLs
+});
 
 // Register Services
 builder.Services.AddScoped<IHydraAuthService, HydraAuthService>();
