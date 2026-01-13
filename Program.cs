@@ -1,6 +1,7 @@
 using HydraEnergyAPI.Configuration;
 using HydraEnergyAPI.Middleware;
 using HydraEnergyAPI.Services;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
