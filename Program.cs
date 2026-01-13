@@ -9,14 +9,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Configure CORS
+var corsOrigins = builder.Configuration["CORS_ORIGINS"]?.Split(',') ?? new[]
+{
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "http://localhost:8080"
+};
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "http://localhost:8080")
+        policy.WithOrigins(corsOrigins)
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
@@ -71,15 +75,13 @@ builder.Logging.AddDebug();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "HYDRA Energy Intelligence API v1");
-        c.RoutePrefix = string.Empty; // Serve Swagger UI at root
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "HYDRA Energy Intelligence API v1");
+    c.RoutePrefix = "swagger";
+});
 
 // Use custom exception handling middleware
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -87,6 +89,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 // Enable CORS
 app.UseCors("AllowFrontend");
 
+// Commented out for Render deployment (uses internal HTTP with external HTTPS)
 //app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -102,10 +105,26 @@ app.MapGet("/health", () => Results.Ok(new
     version = "1.0.0"
 }));
 
-// Root endpoint
-app.MapGet("/", () => Results.Redirect("/swagger"));
+// Root endpoint - returns API info
+app.MapGet("/", () => Results.Ok(new
+{
+    message = "HYDRA Energy Intelligence API",
+    version = "1.0.0",
+    swagger = "/swagger",
+    health = "/health",
+    endpoints = new
+    {
+        auth = "/api/auth/token",
+        energy = "/api/energy",
+        analytics = "/api/analytics",
+        forecast = "/api/forecast",
+        insights = "/api/insights",
+        weather = "/api/weather"
+    }
+}));
 
 app.Logger.LogInformation("HYDRA Energy Intelligence API starting...");
-app.Logger.LogInformation("Swagger UI available at: http://localhost:5000 (or configured port)");
+app.Logger.LogInformation($"Environment: {app.Environment.EnvironmentName}");
+app.Logger.LogInformation("Swagger UI available at: /swagger");
 
 app.Run();
