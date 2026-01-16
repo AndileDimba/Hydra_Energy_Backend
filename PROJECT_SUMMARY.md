@@ -449,7 +449,7 @@ The API is designed to work with a Vue 3/React/Angular frontend:
 
 ## Contact & Support
 
-**Developer**: DeepAgent (Abacus.AI)
+**Developer**: Andile Dimba
 **Case Study For**: The Awareness Company
 **Submission Email**: priaash@awarenesscompany.co.za
 **Deadline**: December 18, 2025, 5 PM SAST
